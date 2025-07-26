@@ -1,1 +1,8 @@
 # AWS-automated-ETL-pipeline
+This project demonstrates a lightweight, event-driven ETL pipeline built on AWS using S3, Lambda, Glue, and Athena. Incoming JSON files are uploaded to an S3 bucket, where a Lambda function is automatically triggered to process them. The Lambda function reads and flattens the JSON content into a structured format using Pandas, and stores the output as Parquet files in a separate folder within the same bucket. To ensure uniqueness and avoid overwriting, each output file is suffixed with a timestamp.
+
+Since AWS Lambda does not include Pandas by default, an AWS-provided Pandas SDK layer is added to enable DataFrame operations and Parquet conversion. The function's execution timeout is increased from the default to allow sufficient time for processing larger files. For cost-efficiency and performance, Parquet is preferred over CSV due to its compact size and faster load times.
+
+To make the processed data queryable, AWS Glue is used to crawl the Parquet folder and populate the AWS Glue Data Catalog. This enables seamless querying of the data through Amazon Athena. The folder structure in S3 automatically maps to table names in Athena, allowing users to explore data without additional transformations. To further streamline the workflow, the crawler can optionally be triggered from within the Lambda function, provided the necessary permissions are added to its execution role.
+
+Overall, this setup provides a serverless, scalable, and cost-effective ETL pipeline that is easy to deploy and well-suited for real-time or batch processing of semi-structured data.
